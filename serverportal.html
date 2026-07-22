@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마인크래프트 평마 서버</title>
+    <!-- FontAwesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #2ecc71;
+            --accent-hover: #27ae60;
+            --text-color: #ffffff;
+            --text-sub: #b3b3b3;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(180deg, rgba(46,204,113,0.1) 0%, rgba(18,18,18,1) 100%);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        header p {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+        }
+
+        /* 1. IP 복사 박스 */
+        .ip-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2a2a2a;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 2px dashed var(--accent-color);
+            gap: 10px;
+        }
+
+        .ip-text {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .copy-btn {
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* 2. 링크 버튼 */
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .link-btn:hover {
+            background-color: #34495e;
+        }
+
+        /* 3. 서버 규칙 */
+        .rule-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rule-section-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .rule-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rule-list li {
+            background: #252525;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+            font-size: 0.95rem;
+        }
+
+        .rule-notice {
+            background: #2a2215;
+            border-left: 4px solid #e67e22;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            line-height: 1.5;
+        }
+
+        .rule-sub-box {
+            background: #1a232a;
+            border: 1px solid #2c3e50;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* 4. 공지사항 및 업데이트 리스트 */
+        .post-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: #fff;
+        }
+
+        .post-content {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .coupon-code {
+            display: inline-block;
+            background: #2a2a2a;
+            color: var(--accent-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        /* 5. 랭킹 */
+        .ranking-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .ranking-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .ranking-table th, .ranking-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .ranking-table th {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+        }
+
+        .rank-1 { color: #f1c40f; font-weight: bold; }
+        .rank-2 { color: #bdc3c7; font-weight: bold; }
+        .rank-3 { color: #e67e22; font-weight: bold; }
+
+        .no-data {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            background: #252525;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* 6. 소셜 버튼 */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-discord {
+            background-color: #5865F2;
+        }
+        .btn-discord:hover {
+            background-color: #4752C4;
+        }
+
+        .btn-openchat {
+            background-color: #FEE500;
+            color: #000000;
+        }
+        .btn-openchat:hover {
+            background-color: #E6CF00;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>평마 서버</h1>
+        <p>RPG + 반야생의 화려한 조화!</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 서버 접속 주소 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-server"></i> 서버 접속 주소</div>
+            <div class="ip-box">
+                <span class="ip-text" id="server-ip">peacemc.kro.kr</span>
+                <button class="copy-btn" onclick="copyIp()">
+                    <i class="fa-regular fa-copy"></i> 주소 복사
+                </button>
+            </div>
+        </div>
+
+        <!-- 시작 가이드 외부 링크 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-book-open"></i> 초보자 가이드</div>
+            <a href="https://www.wikipeacemc.kro.kr/" target="_blank" class="link-btn">
+                시작 가이드 위키로 이동하기 <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+        </div>
+
+        <!-- 서버 기본 규칙 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-shield-halved"></i> 서버 규칙</div>
+            <div class="rule-container">
+                
+                <!-- 디스코드 서버 규칙 -->
+                <div>
+                    <div class="rule-section-title">💬 디스코드 서버 규칙</div>
+                    <ul class="rule-list">
+                        <li>1 | 서로에게 모욕감을 주거나 혐오감, 불쾌감 등을 유발시키지 마세요.</li>
+                        <li>2 | 도배, 단타, 선동, 욕설, 비방, 섹드립 등의 발언을 하지 마세요.</li>
+                        <li>3 | 정치적, 종교적이거나 특정 커뮤니티, 단체 등을 드러내는 발언을 하지 마세요.</li>
+                        <li>4 | 타인의 개인정보를 유출하지 마세요.</li>
+                        <li>5 | 허가받지 않은 홍보를 하지 마세요.</li>
+                        <li>6 | 불법, 해킹 프로그램 등을 배포하지 마세요.</li>
+                        <li>7 | 서버에 들낙(입장 후 바로 퇴장)을 하는 행위를 하지 마세요.</li>
+                        <li>8 | 서로에게 사기를 치는 등의 행위를 하지 마세요.</li>
+                        <li>9 | 서로를 존중해주세요.</li>
+                        <li>10 | 서로를 이유없이 멘션하지 마세요.</li>
+                        <li>11 | 디스코드 이용약관(ToS)에 반하는 행위를 하지 마세요.</li>
+                    </ul>
+                </div>
+
+                <!-- 마인크래프트 서버 규칙 -->
+                <div>
+                    <div class="rule-section-title">🎮 마인크래프트 서버 규칙</div>
+                    <ul class="rule-list">
+                        <li>1 | 비인가 프로그램을 사용하지 마세요. ( 핵, 엑스레이 등 )</li>
+                        <li>2 | 버그를 이용하지 마세요.</li>
+                        <li>3 | 마을서버에서 일부러 다른 마을 옆에 마을을 짓지 마세요.</li>
+                        <li>4 | 마을서버에서 약탈, 테러등 은 하지 마세요.</li>
+                        <li>5 | 마을서버에서 공장을 짓지 마세요. ( 반자동, 자동 )</li>
+                        <li>6 | 채팅에 이상한말, 친목 하지 마세요.</li>
+                        <li>7 | 시세에 아예 맞지 않는 돈으로 물건을 팔지 마세요. ( 최소 0.1배 ~ 최대 10배 )</li>
+                        <li>8 | 현금거래를 시도하지 마세요.</li>
+                        <li>9 | 던전에서 고의로 시간을 끌지 마세요.</li>
+                        <li>10 | 거래시 사기치지 마세요</li>
+                        <li>11 | 부계정을 쓰지 마세요.</li>
+                        <li>12 | 본인을 특정할수 없는 닉네임 변경 금지 ( 한글 닉 )</li>
+                        <li>13 | 랭킹을 위한 아이템 대여 금지 ( 랭킹을 찍으려고 루비검 빌리기.. 등 )</li>
+                        <li>14 | 사냥터에서 비매너 행위 ( 스틸, 길막, 사냥도 안하면서 자리차지 ) 금지</li>
+                    </ul>
+                </div>
+
+                <!-- 안내 및 처벌 안내 -->
+                <div class="rule-notice">
+                    ⚠️ 위 규칙을 어길 경우 처벌을 받을 수 있음을 알립니다.<br>
+                    ⚠️ 삼삼(관리자) 의 재량에 따라 제시되지 않은 규칙에 대해 처벌을 받을 수 있음을 알립니다.<br>
+                    ⚠️ 관리자도 한명의 유저입니다.<br>
+                    📌 채팅금지 ~ 경고3회로 처벌 수위가 나누어져 있으며 저지른 행위에 따라 나누어서 지급됩니다. (경고 3회시 밴)
+                </div>
+
+                <!-- 모드 및 리소스팩 규정 -->
+                <div class="rule-sub-box">
+                    <p style="color: var(--accent-color); font-weight: bold; margin-bottom: 5px;">✅ 허용되는 모드 및 리소스팩</p>
+                    <p style="margin-bottom: 10px; color: #ddd;">미니맵, 감마 모드(리소스팩), 바닐라 트윅스 리소스팩, 마우스 트윅스, 앉기 반동 해제 모드</p>
+                    
+                    <p style="color: #e74c3c; font-weight: bold; margin-bottom: 5px;">❌ 비허용되는 모드 및 리소스팩</p>
+                    <p style="margin-bottom: 10px; color: #ddd;">오토마우스, 엑스레이, 자동 설치 모드, 자동 파괴 모드, 리치 핵, 스피드 핵</p>
+                    
+                    <p style="font-size: 0.85rem; color: var(--text-sub);">
+                        * 그 외의 모드는 문의 하시길 바랍니다. 남에게 피해가 안가는 선에선 가능합니다. ( 오토마우스, 자동설치모드 한정 )<br>
+                        - 오토마우스로 잠수 태워놔서 자원 얻어도 되나요? ❌<br>
+                        - 공장 자동설치모드로 지어도 될까요? ❌<br>
+                        - 건축 해도 될까요? ✅
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 공지사항 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-bullhorn"></i> 공지사항</div>
+            <div class="post-list">
+                
+                <div class="post-item">
+                    <div class="post-header">
+                        <span>📢 서버가 열렸습니다!</span>
+                    </div>
+                    <div class="post-content">
+기다려주셔서 감사합니다.
+2.19.3 참고
+                    </div>
+                </div>
+
+                <div class="post-item">
+                    <div class="post-header">
+                        <span>🎁 어제의 일 사과 보상입니다!</span>
+                    </div>
+                    <div class="post-content">
+섭섭해하지 않게 넣어놨어요!
+
+<span class="coupon-code">/쿠폰 0721서버터짐보상</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 패치 & 업데이트 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-wrench"></i> 패치 & 업데이트</div>
+            <div class="post-list">
+                
+                <div class="post-item">
+                    <div class="post-header">
+                        <span>[v2.19.3] 패치 내역</span>
+                    </div>
+                    <div class="post-content">
+1 . 서버 자동 꺼짐시간 변경
+-> 렉을 완전 방지는 못하더라도, 서버가 아예 꺼지는 일은 드물껍니다... ( 아마 )
+                    </div>
+                </div>
+
+                <div class="post-item">
+                    <div class="post-header">
+                        <span>[v2.19.2] 패치 내역</span>
+                    </div>
+                    <div class="post-content">
+1 . 용살검 재료 변경
+2 . 발전과제 관련 오류 수정
+3 . 리소스팩 오류 수정
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 서버 랭킹 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-trophy"></i> 서버 랭킹 Top 10</div>
+            <div class="ranking-container">
+                
+                <!-- 재화 TOP 10 (최신화 안됨) -->
+                <div>
+                    <h3 style="margin-bottom: 10px; font-size: 1.05rem;">💰 돈 랭킹</h3>
+                    <div class="no-data">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-bottom: 8px; font-size: 1.2rem; color: #e67e22;"></i><br>
+                        돈 랭킹은 아직 최신화되지 않았습니다.
+                    </div>
+                </div>
+
+                <!-- 전투력 TOP 10 -->
+                <div>
+                    <h3 style="margin-bottom: 10px; font-size: 1.05rem;">⚔️ 전투력 TOP 10 <span style="font-size: 0.8rem; color: var(--text-sub); font-weight: normal;">(최신화: 26.07.22)</span></h3>
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>순위</th>
+                                <th>닉네임</th>
+                                <th>전투력</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="rank-1">1</td><td>inpe_</td><td>27549.78</td></tr>
+                            <tr><td class="rank-2">2</td><td>yujun0</td><td>11952.01</td></tr>
+                            <tr><td class="rank-3">3</td><td>khduf5</td><td>11384.85</td></tr>
+                            <tr><td>4</td><td>acornanchovy</td><td>10866.6</td></tr>
+                            <tr><td>5</td><td>yeonjunyoo</td><td>9435.17</td></tr>
+                            <tr><td>6</td><td>ehdns0721</td><td>7735.6</td></tr>
+                            <tr><td>7</td><td>backlight32</td><td>4803.96</td></tr>
+                            <tr><td>8</td><td>ironknot5355956</td><td>4447.8</td></tr>
+                            <tr><td>9</td><td>jeje_seol</td><td>3409.83</td></tr>
+                            <tr><td>10</td><td>275f</td><td>3348</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 커뮤니티 바로가기 -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-comments"></i> 공식 커뮤니티</div>
+            <div class="social-grid">
+                <!-- 디스코드 주소 입력 -->
+                <a href="https://discord.gg/YOUR_DISCORD_INVITE" target="_blank" class="link-btn btn-discord">
+                    <i class="fa-brands fa-discord"></i> 디스코드
+                </a>
+                <!-- 오픈채팅 주소 입력 -->
+                <a href="https://open.kakao.com/o/YOUR_OPENCHAT" target="_blank" class="link-btn btn-openchat">
+                    <i class="fa-solid fa-comment"></i> 오픈채팅
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- IP 복사 스크립트 -->
+    <script>
+        function copyIp() {
+            const ipText = document.getElementById("server-ip").innerText;
+            navigator.clipboard.writeText(ipText).then(() => {
+                alert("서버 IP가 복사되었습니다: " + ipText);
+            }).catch(err => {
+                alert("복사에 실패했습니다. 직접 복사해주세요.");
+            });
+        }
+    </script>
+</body>
+</html>
